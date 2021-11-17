@@ -31,7 +31,46 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css
       </div>  
       <div v-else>
         <h1>Checkout</h1>
+        <h2>First name</h2>
+        <input v-model.trim="order.firstName"/>
+
+        <h2>Last name</h2>
+        <input v-model.trim="order.lastName"/>
+
+        <h2>Adress</h2>
+        <input v-model.trim="order.adress"/>
+
+        <h2>City</h2>
+        <input v-model.trim="order.city"/>
+
+        <h2>Zip code</h2>
+        <input v-model.number="order.zip" type="number"/>
+        <br>
+        <br>
+        <input type="checkbox" id="gift" value="true" v-model="order.gift"
+        v-bind:true-value="order.sendGift"
+        v-bind:false-value="order.dontSendGift">
         
+        <label for="gift">Ship as a gift?</label>
+       <br>
+        <input type="radio" id="home" value="home" v-model="order.method">
+        <label for="home">Home</label>
+    
+        <input type="radio" id="business" value="business" v-model="order.method">
+        <label for="business">Business</label>
+
+
+        <h2>Order Information</h2>
+        <p>First name: {{order.firstName}}</p>
+        <p>Last name: {{order.lastName}}</p>
+        <p>Adress: {{order.adress}}</p>
+        <p>City: {{order.city}}</p>
+        <p>Zip code: {{order.zip}}</p>
+        <p>Gift: {{order.gift}}</p>
+        <p>Home/Business: {{order.method}}</p>
+
+
+        <button v-on:click="submitForm">Place order</button>
       </div>
     </div>
     
@@ -56,6 +95,17 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css
                 spaces: 5,
                 image: "images/maths.png"
               },
+
+              order: {
+                firstName: "",
+                lastName: "",
+                adress: "",
+                city: "",
+                zip: "",
+                sendGift: "Send as a gift",
+                dontSendGift:"Do not send as a gift",
+                method: ""
+              },
               cart: []
             
             },
@@ -69,6 +119,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css
               },
               showCheckout(){
                 this.website.showProduct = this.website.showProduct ? false : true;
+              },
+              submitForm(){
+                {alert("Order submitted!")}
               }
             },
             
