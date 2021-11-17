@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+<body>
+  
+    <div id="app">
+      <header>
+        <h1>{{website.name}}</h1>
+        <button v-on:click='showCheckout'>
+          {{cartCount}}
+          <span class="fas fa-cart-plus"> </span> 
+          Checkout
+        </button>
+      </header>
+      <div v-if='website.showProduct'>
+        <img style="width: 100px;"v-bind:src="lesson.image">
+        <div style="text-align: left;">
+            <h1>Lesson: {{lesson.subject}}</h1>
+            <h2>Campus: {{lesson.campus}}</h2>
+            <h2>Price: {{lesson.price}}</h2>
+            <h2>Spaces: {{lesson.spaces}}</h2>
+            <button @click='addItem' :disabled='!isAvailable'>Add Lesson</button>
+        </div>    
+      </div>  
+      <div v-else>
+        <h1>Checkout</h1>
+        
+      </div>
+    </div>
+    
+    </body>
+
+    <script>
+      
+
+        let app = new Vue({
+            el: '#app',
+            data: {
+              website: {
+                name: "Courses",
+                showProduct: true
+              },
+
+              lesson: {
+                id: "1",
+                subject: "Maths",
+                campus: "London",
+                price: "£100",
+                spaces: 5,
+                image: "images/maths.png"
+              },
+              cart: []
+            
+            },
+              
+            methods: {
+              addItem(){
+                if(this.lesson.spaces > 0){
+                  this.lesson.spaces -= 1
+                  this.cart.push(this.lesson.id);
+                }
+              },
+              showCheckout(){
+                this.website.showProduct = this.website.showProduct ? false : true;
+              }
+            },
+            
+            computed: {
+              isAvailable(){
+                return this.lesson.spaces != 0;
+              },
+              cartCount(){
+                  return this.cart.length || ''
+                }
+             
+            }
+        }) 
+      </script>
+</html>
