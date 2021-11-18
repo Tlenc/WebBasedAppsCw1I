@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/vue"></script>
     <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+   <script src="lessons.js"></script>
 </head>
 <body>
   
@@ -19,16 +20,26 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css
           Checkout
         </button>
       </header>
-      <div v-if='website.showProduct'>
-        <img style="width: 100px;"v-bind:src="lesson.image">
-        <div style="text-align: left;">
-            <h1>Lesson: {{lesson.subject}}</h1>
-            <h2>Campus: {{lesson.campus}}</h2>
-            <h2>Price: {{lesson.price}}</h2>
-            <h2>Spaces: {{lesson.spaces}}</h2>
-            <button @click='addItem' :disabled='!isAvailable'>Add Lesson</button>
-        </div>    
-      </div>  
+
+      <div v-if='website.showProduct' style="display: flex;flex-direction: row;flex-wrap:wrap" >
+        <div  style="text-align: left;" v-for='lesson in lessons'>
+          <figure>
+            <img style="width: 200px;" v-bind:src="lesson.image">
+          </figure>
+          <h2 v-text="lesson.subject"></h2>
+          <p>Location: {{lesson.location}}</p>
+          <p>Price : {{lesson.price}}</p>
+          <p>Availabe spaces : {{lesson.space}}</p>
+
+          <button @click='addItem(lesson)' :disabled='!canAdd(lesson)'>Add Lesson</button>
+            <span v-if="lesson.space === 0">no spaces left!</span>
+            <span v-else-if="lesson.space - cartCount(lesson.id) < 3 ">only {{lesson.space - cartCount(lesson.id)}} left!</span>
+            <span v-else>Buy now!</span>
+          </div>
+        </div>
+      
+    
+  
       <div v-else>
         <h1>Checkout</h1>
         <h2>First name</h2>
@@ -76,24 +87,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css
     
     </body>
 
-    <script>
-      
-
+    
+<script>
         let app = new Vue({
             el: '#app',
             data: {
+              lessons: lessons,
+           
               website: {
                 name: "Courses",
                 showProduct: true
-              },
-
-              lesson: {
-                id: "1",
-                subject: "Maths",
-                campus: "London",
-                price: "£100",
-                spaces: 5,
-                image: "images/maths.png"
               },
 
               order: {
@@ -111,29 +114,31 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css
             },
               
             methods: {
-              addItem(){
-                if(this.lesson.spaces > 0){
-                  this.lesson.spaces -= 1
-                  this.cart.push(this.lesson.id);
-                }
+              addItem(lesson){
+                  this.cart.push(lesson.id);
               },
               showCheckout(){
                 this.website.showProduct = this.website.showProduct ? false : true;
               },
               submitForm(){
                 {alert("Order submitted!")}
-              }
-            },
-            
-            computed: {
-              isAvailable(){
-                return this.lesson.spaces != 0;
               },
-              cartCount(){
-                  return this.cart.length || ''
+              canAdd(lesson){
+                  return lesson.space > this.cartCount(lesson.id);
+                },
+                cartCount(id){
+                  let count = 0;
+                  for(let i = 0; i < this.cart.length; i++){
+                    if(this.cart[i] === id) {
+                      count++;
+                     
+                    }
+                  }
+                  return count;
                 }
-             
             }
+            
+          
         }) 
       </script>
 </html>
