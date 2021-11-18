@@ -1,144 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://unpkg.com/vue"></script>
-    <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-   <script src="lessons.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <script src="lessons.js"></script>
 </head>
+
 <body>
-  
-    <div id="app">
-      <header>
-        <h1>{{website.name}}</h1>
-        <button v-on:click='showCheckout'>
-          {{cartCount}}
-          <span class="fas fa-cart-plus"> </span> 
-          Checkout
+
+  <div id="app">
+    <header>
+      <h1>{{website.name}}</h1>
+      <button v-on:click='showCheckout'>
+        {{cartItemCount}}
+        <span class="fas fa-cart-plus"> </span>
+        Checkout
+      </button>
+    </header>
+
+    <div v-if='website.showProduct' style="display: flex;flex-direction: row;flex-wrap:wrap">
+      <div style="text-align: left;" v-for='lesson in lessons'>
+        <figure>
+          <img style="width: 200px;" v-bind:src="lesson.image">
+        </figure>
+        <h2 v-text="lesson.subject"></h2>
+        <p>Location: {{lesson.location}}</p>
+        <p>Price : {{lesson.price}}</p>
+        <p>Availabe spaces : {{lesson.space}}</p>
+
+        <button @click='addItem(lesson)' :disabled='!canAdd(lesson)'>
+          <span class="lesson.icon"> </span>
+          Add Lesson
         </button>
-      </header>
 
-      <div v-if='website.showProduct' style="display: flex;flex-direction: row;flex-wrap:wrap" >
-        <div  style="text-align: left;" v-for='lesson in lessons'>
-          <figure>
-            <img style="width: 200px;" v-bind:src="lesson.image">
-          </figure>
-          <h2 v-text="lesson.subject"></h2>
-          <p>Location: {{lesson.location}}</p>
-          <p>Price : {{lesson.price}}</p>
-          <p>Availabe spaces : {{lesson.space}}</p>
-
-          <button @click='addItem(lesson)' :disabled='!canAdd(lesson)'>Add Lesson</button>
-            <span v-if="lesson.space === 0">no spaces left!</span>
-            <span v-else-if="lesson.space - cartCount(lesson.id) < 3 ">only {{lesson.space - cartCount(lesson.id)}} left!</span>
-            <span v-else>Buy now!</span>
-          </div>
-        </div>
-      
-    
-  
-      <div v-else>
-        <h1>Checkout</h1>
-        <h2>First name</h2>
-        <input v-model.trim="order.firstName"/>
-
-        <h2>Last name</h2>
-        <input v-model.trim="order.lastName"/>
-
-        <h2>Adress</h2>
-        <input v-model.trim="order.adress"/>
-
-        <h2>City</h2>
-        <input v-model.trim="order.city"/>
-
-        <h2>Zip code</h2>
-        <input v-model.number="order.zip" type="number"/>
-        <br>
-        <br>
-        <input type="checkbox" id="gift" value="true" v-model="order.gift"
-        v-bind:true-value="order.sendGift"
-        v-bind:false-value="order.dontSendGift">
-        
-        <label for="gift">Ship as a gift?</label>
-       <br>
-        <input type="radio" id="home" value="home" v-model="order.method">
-        <label for="home">Home</label>
-    
-        <input type="radio" id="business" value="business" v-model="order.method">
-        <label for="business">Business</label>
-
-
-        <h2>Order Information</h2>
-        <p>First name: {{order.firstName}}</p>
-        <p>Last name: {{order.lastName}}</p>
-        <p>Adress: {{order.adress}}</p>
-        <p>City: {{order.city}}</p>
-        <p>Zip code: {{order.zip}}</p>
-        <p>Gift: {{order.gift}}</p>
-        <p>Home/Business: {{order.method}}</p>
-
-
-        <button v-on:click="submitForm">Place order</button>
+        <span v-if="lesson.space === 0">no spaces left!</span>
+        <span v-else-if="lesson.space - cartCount(lesson.id) < 3 ">only {{lesson.space - cartCount(lesson.id)}}
+          left!</span>
+        <span v-else>Buy now!</span>
       </div>
     </div>
-    
-    </body>
 
-    
+
+
+    <div v-else>
+      <h1>Checkout</h1>
+      <h2>First name</h2>
+      <input v-model.trim="order.firstName" />
+
+      <h2>Last name</h2>
+      <input v-model.trim="order.lastName" />
+
+      <h2>Adress</h2>
+      <input v-model.trim="order.adress" />
+
+      <h2>City</h2>
+      <input v-model.trim="order.city" />
+
+      <h2>Zip code</h2>
+      <input v-model.number="order.zip" type="number" />
+      <br>
+      <br>
+      <input type="checkbox" id="gift" value="true" v-model="order.gift" v-bind:true-value="order.sendGift"
+        v-bind:false-value="order.dontSendGift">
+
+      <label for="gift">Ship as a gift?</label>
+      <br>
+      <input type="radio" id="home" value="home" v-model="order.method">
+      <label for="home">Home</label>
+
+      <input type="radio" id="business" value="business" v-model="order.method">
+      <label for="business">Business</label>
+
+
+      <h2>Order Information</h2>
+      <p>First name: {{order.firstName}}</p>
+      <p>Last name: {{order.lastName}}</p>
+      <p>Adress: {{order.adress}}</p>
+      <p>City: {{order.city}}</p>
+      <p>Zip code: {{order.zip}}</p>
+      <p>Gift: {{order.gift}}</p>
+      <p>Home/Business: {{order.method}}</p>
+
+
+      <button v-on:click="submitForm">Place order</button>
+    </div>
+  </div>
+
+</body>
+
+
 <script>
-        let app = new Vue({
-            el: '#app',
-            data: {
-              lessons: lessons,
-           
-              website: {
-                name: "Courses",
-                showProduct: true
-              },
+  let app = new Vue({
+    el: '#app',
+    data: {
+      lessons: lessons,
 
-              order: {
-                firstName: "",
-                lastName: "",
-                adress: "",
-                city: "",
-                zip: "",
-                sendGift: "Send as a gift",
-                dontSendGift:"Do not send as a gift",
-                method: ""
-              },
-              cart: []
-            
-            },
-              
-            methods: {
-              addItem(lesson){
-                  this.cart.push(lesson.id);
-              },
-              showCheckout(){
-                this.website.showProduct = this.website.showProduct ? false : true;
-              },
-              submitForm(){
-                {alert("Order submitted!")}
-              },
-              canAdd(lesson){
-                  return lesson.space > this.cartCount(lesson.id);
-                },
-                cartCount(id){
-                  let count = 0;
-                  for(let i = 0; i < this.cart.length; i++){
-                    if(this.cart[i] === id) {
-                      count++;
-                     
-                    }
-                  }
-                  return count;
-                }
-            }
-            
-          
-        }) 
-      </script>
+      website: {
+        name: "Courses",
+        showProduct: true
+      },
+
+      order: {
+        firstName: "",
+        lastName: "",
+        adress: "",
+        city: "",
+        zip: "",
+        sendGift: "Send as a gift",
+        dontSendGift: "Do not send as a gift",
+        method: ""
+      },
+      cart: []
+
+    },
+
+    methods: {
+      addItem(lesson) {
+        this.cart.push(lesson.id);
+      },
+      showCheckout() {
+        this.website.showProduct = this.website.showProduct ? false : true;
+      },
+      submitForm() {
+        { alert("Order submitted!") }
+      },
+      canAdd(lesson) {
+        return lesson.space > this.cartCount(lesson.id);
+      },
+      cartCount(id) {
+        let count = 0;
+        for (let i = 0; i < this.cart.length; i++) {
+          if (this.cart[i] === id) {
+            count++;
+
+          }
+        }
+        return count;
+      }
+
+    },
+    computed: {
+      cartItemCount() {
+        return this.cart.length;
+      }
+    }
+  })
+</script>
+
 </html>
