@@ -5,7 +5,7 @@ let lessons = [
         "price":100, 
         "space":5, 
         "image":"images/maths.png", 
-        "icon": "fas fa-calculator"},    
+        "icon": "f1ec"},    
     {"subject":"English", 
         "id":2,
         "location":"edgware", 

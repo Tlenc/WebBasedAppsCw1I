@@ -22,6 +22,28 @@
       </button>
     </header>
 
+
+
+    <h2>Sort by : </h2>
+    
+    <input type="radio" id="ascending" value="ascending" v-model="picked">
+    <label for="ascending">ascending</label>
+    <input type="radio" id="descending" value="descending" v-model="picked">
+    <label for="descending">descending</label>
+
+
+   
+    <select class="form-control" v-model="selected">
+      <option>subject</option>
+      <option>location</option>
+      <option>price</option>
+      <option>availability</option>
+      
+   </select>
+
+    <button @click='sortedLessons(picked,selected)'>Sort</button>
+
+
     <div v-if='website.showProduct' style="display: flex;flex-direction: row;flex-wrap:wrap">
       <div style="text-align: left;" v-for='lesson in lessons'>
         <figure>
@@ -30,10 +52,10 @@
         <h2 v-text="lesson.subject"></h2>
         <p>Location: {{lesson.location}}</p>
         <p>Price : {{lesson.price}}</p>
-        <p>Availabe spaces : {{lesson.space}}</p>
+        <p>Availabe spaces : {{lesson.space - cartCount(lesson.id)}}</p>
 
         <button @click='addItem(lesson)' :disabled='!canAdd(lesson)'>
-          <span class="lesson.icon"> </span>
+          <span class="fa" classname="lesson.icon"> </span>
           Add Lesson
         </button>
 
@@ -94,15 +116,18 @@
 
 
 <script>
+
   let app = new Vue({
     el: '#app',
     data: {
+      selected: '',
+      picked: null,
       lessons: lessons,
-
       website: {
         name: "Courses",
         showProduct: true
       },
+     
 
       order: {
         firstName: "",
@@ -140,13 +165,86 @@
           }
         }
         return count;
+      },
+
+
+      sortedLessons(picked,selected){
+        if(selected == "price"){
+          if(picked == "ascending"){
+        function compare(a,b){
+          if(a.price > b.price) return 1;
+          if(a.price < b.price) return -1;
+          return 0; 
+        }
+      }else{
+        function compare(a,b){
+          if(a.price > b.price) return -1;
+          if(a.price < b.price) return 1;
+          return 0; 
+        }
+       
+      }
+      return this.lessons.sort(compare);
+      }else if(selected == "subject"){
+        if(picked == "ascending"){
+          function compare(a,b){
+          let fa = a.subject.toLowerCase(), fb = b.subject.toLowerCase();
+          if (fa < fb) return -1
+			    if (fa > fb) return 1
+			    return 0;
+          }
+          
+        }else{
+          function compare(a,b){
+          let fa = a.subject.toLowerCase(), fb = b.subject.toLowerCase();
+          if (fa < fb) return 1
+			    if (fa > fb) return -1
+			    return 0;
+        }
+      }
+      return this.lessons.sort(compare);
+    }else if(selected == "location"){
+      if(picked == "ascending"){
+          function compare(a,b){
+          let fa = a.location.toLowerCase(), fb = b.location.toLowerCase();
+          if (fa < fb) return -1
+			    if (fa > fb) return 1
+			    return 0;
+          }
+          
+        }else{
+          function compare(a,b){
+          let fa = a.location.toLowerCase(), fb = b.location.toLowerCase();
+          if (fa < fb) return 1
+			    if (fa > fb) return -1
+			    return 0;
+        }
+      }
+      return this.lessons.sort(compare);
+    }else if(selected == "availability"){
+          if(picked == "ascending"){
+        function compare(a,b){
+          if(app.cartCount(a.id) > app.cartCount(b.id)) return -1;
+          if(app.cartCount(a.id) < app.cartCount(b.id)) return 1;
+          return 0; 
+        }
+      }else{
+        function compare(a,b){
+          if(app.cartCount(a.id) > app.cartCount(b.id)) return 1;
+          if(app.cartCount(a.id) < app.cartCount(b.id)) return -1;
+          return 0; 
+        }
+       
+      }
+      return this.lessons.sort(compare);
       }
 
-    },
+    }},
     computed: {
       cartItemCount() {
         return this.cart.length;
       }
+   
     }
   })
 </script>
