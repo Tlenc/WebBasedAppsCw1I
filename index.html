@@ -13,9 +13,10 @@
 <body>
 
   <div id="app">
+
     <header>
       <h1>{{website.name}}</h1>
-      <button v-on:click='showCheckout'>
+      <button v-on:click='showCheckout' v-if="cartItemCount != 0" >
         {{cartItemCount}}
         <span class="fas fa-cart-plus"> </span>
         Checkout
@@ -23,7 +24,7 @@
     </header>
 
 
-
+    <div v-if='website.showProduct'>
     <h2>Sort by : </h2>
     
     <input type="radio" id="ascending" value="ascending" v-model="picked">
@@ -42,7 +43,7 @@
    </select>
 
     <button @click='sortedLessons(picked,selected)'>Sort</button>
-
+  </div>
 
     <div v-if='website.showProduct' style="display: flex;flex-direction: row;flex-wrap:wrap">
       <div style="text-align: left;" v-for='lesson in lessons'>
@@ -55,7 +56,7 @@
         <p>Availabe spaces : {{lesson.space - cartCount(lesson.id)}}</p>
 
         <button @click='addItem(lesson)' :disabled='!canAdd(lesson)'>
-          <span class="fa" classname="lesson.icon"> </span>
+          <span classname="lesson.icon"> </span>
           Add Lesson
         </button>
 
@@ -70,6 +71,18 @@
 
     <div v-else>
       <h1>Checkout</h1>
+
+      <div style="display: flex;flex-direction: row;flex-wrap:wrap">
+       
+        <h2>Cart content : </h2>
+        <ul v-for="(lesson, index) in cartContent(lessons)">
+          <p>{{lesson.subject}}</p>
+          <p>{{lesson.price}}</p>
+          <button @click='removeItem(this.index)'>Remove</button>
+        </ul>
+     
+      </div>
+
       <h2>First name</h2>
       <input v-model.trim="order.firstName" />
 
@@ -147,6 +160,9 @@
       addItem(lesson) {
         this.cart.push(lesson.id);
       },
+      removeItem(index){
+        this.cart.splice(index, 1);
+      },
       showCheckout() {
         this.website.showProduct = this.website.showProduct ? false : true;
       },
@@ -165,6 +181,18 @@
           }
         }
         return count;
+      },
+      cartContent(lessons){
+        let list=[];
+        for(let x = 0; x<lessons.length;x++){
+          for(let i =0; i<this.cart.length; i++){
+            if(this.cart[i] === lessons[x].id){
+              list.push(lessons[x])
+              
+            }
+          }
+      }
+       return list;
       },
 
 
