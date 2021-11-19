@@ -56,7 +56,7 @@
         <p>Availabe spaces : {{lesson.space - cartCount(lesson.id)}}</p>
 
         <button @click='addItem(lesson)' :disabled='!canAdd(lesson)'>
-          <span classname="lesson.icon"> </span>
+          <img style="width: 50px;" v-bind:class="lesson.icon">
           Add Lesson
         </button>
 
@@ -90,7 +90,7 @@
       <input  type="text" v-model.trim="order.lastName" />
 
       <h2>Phone number</h2>
-      <input id=numberInput type="text" v-model.trim="order.number" />
+      <input id=numberInput  type="text" v-model.trim="order.number" />
 
       <h2>Adress</h2>
       <input v-model.trim="order.adress" />
@@ -166,12 +166,9 @@
         var letters = /^[A-Za-z]+$/;
         var numbers = /^[0-9]*$/;
         var characters = /\W|_/g;
-        if(nameInput.match(numbers) || !nameInput.match(letters) || nameInput === null){
+        if(nameInput.match(numbers) || !nameInput.match(letters) || nameInput == null && numberInput.match(letters) || !numberInput.match(numbers) || numberInput == null || nameInput.match(characters) ) {
           return false;
-        }else if(numberInput.match(letters) || !numberInput.match(numbers) || numberInput === null){
-          return false;
-        }else if(nameInput.match(characters)){
-          return false
+        
         }else{
           return true;
         }
