@@ -8,7 +8,9 @@
   <script src="https://unpkg.com/vue"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   <script src="lessons.js"></script>
-</head>
+</head> 
+
+<!--setting up the document with imports -->
 
 <body>
 
@@ -21,8 +23,9 @@
         <span class="fas fa-cart-plus"> </span>
         Checkout
       </button>
+      
     </header>
-
+<!--adding website title and a checkout button that is only visible when cart is not empty -->
 
     <div v-if='website.showProduct'>
     <h2>Sort by : </h2>
@@ -42,11 +45,20 @@
       
    </select>
 
-    <button @click='sortedLessons(picked,selected)'>Sort</button>
-  </div>
+    <button  @click='sortedLessons(picked,selected)'>
+      <i class="fas fa-filter"></i>
+      Sort</button>
 
+      <!--sorting with asceding/descending parameters and user input for attribute to sort by -->
+
+  </div>
+  <input type="text" v-model="userSearch" placeholder="Search" />
     <div v-if='website.showProduct' style="display: flex;flex-direction: row;flex-wrap:wrap">
-      <div style="text-align: left;" v-for='lesson in lessons'>
+
+                           
+      
+      <div style="text-align: left;" v-for='lesson in searchResult'>
+       
         <figure>
           <img style="width: 200px;" v-bind:src="lesson.image">
         </figure>
@@ -55,8 +67,8 @@
         <p>Price : {{lesson.price}}</p>
         <p>Availabe spaces : {{lesson.space - cartCount(lesson.id)}}</p>
 
-        <button @click='addItem(lesson)' :disabled='!canAdd(lesson)'>
-          <img style="width: 50px;" v-bind:class="lesson.icon">
+        <button key="lesson.icon" @click='addItem(lesson)' :disabled='!canAdd(lesson)'>
+          <i class="lesson.icon"></i>
           Add Lesson
         </button>
 
@@ -64,6 +76,11 @@
         <span v-else-if="lesson.space - cartCount(lesson.id) < 3 ">only {{lesson.space - cartCount(lesson.id)}}
           left!</span>
         <span v-else>Buy now!</span>
+     
+
+          <!--spawning lessons from lessons.js, implementing search and add to cart button with checks of availability and lesson div visability -->
+
+
       </div>
     </div>
 
@@ -127,6 +144,10 @@
 
       <button v-on:click="submitForm" v-if="inputCheck(order.firstName,order.number) == true">Place order</button>
     </div>
+
+    <!--checkout page with a cart that has an option to delete items from it and order form and a button. Button only appears when user enters name 
+      and phone number in correct format. (deletion and checks are still bugged)  -->
+
   </div>
 
 </body>
@@ -137,12 +158,15 @@
   let app = new Vue({
     el: '#app',
     data: {
+      userSearch: null,
+      search: "",
       selected: '',
       picked: null,
       lessons: lessons,
       website: {
         name: "Courses",
-        showProduct: true
+        showProduct: true,
+        
       },
      
 
@@ -160,8 +184,9 @@
       cart: []
 
     },
-    
+    // setting up data 
     methods: {
+      
       inputCheck(nameInput,numberInput){
         var letters = /^[A-Za-z]+$/;
         var numbers = /^[0-9]*$/;
@@ -172,23 +197,23 @@
         }else{
           return true;
         }
-      },
+      }, // method to check users name and number input
       
       addItem(lesson) {
         this.cart.push(lesson.id);
-      },
+      }, 
       removeItem(index){
         this.cart.splice(index, 1);
-      },
+      }, // adding and removing items from cart
       showCheckout() {
         this.website.showProduct = this.website.showProduct ? false : true;
-      },
+      }, // method to show or hide checkout
       submitForm() {
         { alert("Order submitted!") }
       },
       canAdd(lesson) {
         return lesson.space > this.cartCount(lesson.id);
-      },
+      }, // check if its allowed to add more lessons to the cart
       cartCount(id) {
         let count = 0;
         for (let i = 0; i < this.cart.length; i++) {
@@ -198,7 +223,7 @@
           }
         }
         return count;
-      },
+      }, // counting of total lessons in the cart
       cartContent(lessons){
         let list=[];
         for(let x = 0; x<lessons.length;x++){
@@ -210,8 +235,9 @@
           }
       }
        return list;
-      },
-
+      }, // method to get contents of the cart
+  
+     
 
       sortedLessons(picked,selected){
         if(selected == "price"){
@@ -284,14 +310,24 @@
       return this.lessons.sort(compare);
       }
 
-    }},
+    }}, // lesson sorting 
     computed: {
       cartItemCount() {
         return this.cart.length;
+      }, //to check the size of the cart
+     
+      searchResult(){
+      if(this.userSearch){
+      return this.lessons.filter((item)=>{
+        return this.userSearch.toLowerCase().split(' ').every(v => item.subject.toLowerCase().includes(v)) ||  this.userSearch.toLowerCase().split(' ').every(v => item.location.toLowerCase().includes(v))    
+      })
+      }else{
+        return this.lessons;
       }
-   
     }
-  })
+    } // search (filter) by subject and location
+  
+})
 
 
 </script>

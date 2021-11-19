@@ -12,7 +12,7 @@ let lessons = [
         "price":90, 
         "space":5,   
         "image":"images/english.png", 
-        "icon": "fas fa-calculator"},     
+        "icon": "fa-calculator"},     
     {"subject":"Science", 
         "id":3,
         "location":"wembley", 
